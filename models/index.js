@@ -3,7 +3,7 @@ const { Sequelize } = require('sequelize');
 // Option 3: Passing parameters separately (other dialects)
 const sequelize = new Sequelize('node-mysql-orm', 'root', '', {
   host: 'localhost',
-  dialect: 'mysql'
+  dialect: 'mysql' /* one of 'mysql' | 'postgres' | 'sqlite' | 'mariadb' | 'mssql' | 'db2' | 'snowflake' | 'oracle' */
 });
 
 try {
@@ -12,3 +12,5 @@ try {
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
+
+  module.exports = sequelize;
