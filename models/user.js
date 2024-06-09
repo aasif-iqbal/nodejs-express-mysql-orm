@@ -1,37 +1,45 @@
-module.exports = (sequelize, DataTypes, Model) =>{
+const { DataTypes, Model } = require('sequelize');
+
+module.exports = (sequelize, DataTypes, Model) => {
 
 class User extends Model {}
 
 User.init(
   {
     // Model attributes are defined here
-    firstName: {
+    user_uuid:{            
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4 // Or DataTypes.UUIDV1            
+    },
+    first_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lastName: {
+    last_name: {
       type: DataTypes.STRING,
       // allowNull defaults to true
     },
-    phoneNumber:{
-      type:DataTypes.INTEGER,
+    phone_number:{
+      type:DataTypes.STRING(12),
       allowNull: false,
     },
-    dateOfBirth:{
+    date_of_birth:{
       type:DataTypes.DATEONLY      
     },
-    userType:{
+    user_type:{
       type:DataTypes.BOOLEAN
     }
   },
   {
     // Other model options go here
     sequelize, // We need to pass the connection instance
-    modelName: 'User', // We need to choose the model name
+    modelName: 'users', // We need to choose the model name
   },
 );
 
 
 // the defined model is the class itself
 console.log(User === sequelize.models.User); // true
+
+return User;
 }
