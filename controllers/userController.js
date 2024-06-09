@@ -1,25 +1,68 @@
+const { where } = require('sequelize');
 const db = require('../models/index.js');
-// console.log(db);
 const User = db.user;
-console.log('User', typeof User);
 
-const getUser = async(req, res) => {
-    
+const getUsers = async(req, res) => {    
     const data = await User.findAll();
     
-    res.send({data:data});
+    res.status(200).json({data:data});
+}
+
+const getUser = async(req, res) => {
+    const userDataById = await User.findOne({
+        where:{
+            id:req.params.id
+        }
+    });
+
+    res.status(200).json({data:userDataById});
 }
 
 const addUser = async(req, res) => {
     const user = req.body;
-    // console.log(user);
-    const userData = await User.create(user);  // create() = build() + save()
+    
+    if(user.length > 1){
+        //create bulk
+        const userData = await User.bulkCreate(user); 
+    }else{
+        const userData = await User.create(user);  // create() = build() + save()
+    }
 
-    // userData.save();
-    res.send({data: userData});
+    res.status(201).json({data: userData});
+}
+
+const updateUser = async(req, res) => {
+    const userId = req.params.id;
+    const userData = req.body;
+
+    const upateUserData = await User.update(
+        userData,
+        {
+            where:{
+                id:userId
+            }
+        }
+    )
+
+    res.status(200).json({data: upateUserData});
+}
+
+const deleteUser = async(req, res) => {
+    const userId = req.params.id;
+
+    const userStatus = await User.destroy({
+        where: {
+          id: userId,
+        },
+      });
+
+      res.status(200).json({data: userStatus});
 }
 
 module.exports = {
+    getUsers,
     getUser,
-    addUser
+    addUser,
+    updateUser,
+    deleteUser
 }
