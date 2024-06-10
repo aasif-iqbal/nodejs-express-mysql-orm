@@ -19,6 +19,9 @@ app.post('/users', userCtr.addUser);
 app.patch('/user/:id', userCtr.updateUser);
 app.delete('/user/:id', userCtr.deleteUser);
 
-app.listen(PORT, ()=>{
+// 
+app.get('/users/details', userCtr.getFullDetails);
+
+app.listen(PORT, () => {
     console.log(`server is running on ${PORT}`);
 })

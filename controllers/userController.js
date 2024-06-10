@@ -1,6 +1,9 @@
 const { where } = require('sequelize');
 const db = require('../models/index.js');
 const User = db.user;
+const Contact = db.contact;
+
+const { v4: uuidv4 } = require('uuid');
 
 const getUsers = async(req, res) => {    
     const data = await User.findAll();
@@ -20,15 +23,15 @@ const getUser = async(req, res) => {
 
 const addUser = async(req, res) => {
     const user = req.body;
-    
+    let userData;
+
     if(user.length > 1){
         //create bulk
-        const userData = await User.bulkCreate(user); 
+        userData = await User.bulkCreate(user); 
     }else{
-        const userData = await User.create(user);  // create() = build() + save()
+        userData = await User.create(user);  // create() = build() + save()
     }
-
-    res.status(201).json({data: userData});
+    res.status(201).json({data: user});
 }
 
 const updateUser = async(req, res) => {
@@ -52,17 +55,33 @@ const deleteUser = async(req, res) => {
 
     const userStatus = await User.destroy({
         where: {
-          id: userId,
+            id: userId,
         },
-      });
+    });
 
-      res.status(200).json({data: userStatus});
+    res.status(200).json({data: userStatus});
 }
+
+// One-to-One Relationship
+const getFullDetails = async(req, res) => {
+    
+    let userDetails = await User.findAll({
+        attributes:['first_name','date_of_birth'],
+        include:[{
+            model:contacts,
+            attributes:['permanent_address','current_address']
+        }]
+    })
+    
+    res.status(200).json({data: userDetails});
+}
+
 
 module.exports = {
     getUsers,
     getUser,
     addUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getFullDetails
 }
