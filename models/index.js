@@ -25,7 +25,7 @@ try {
 
 
   // Associations one-to-one
-  db.user.hasOne(db.contact);
+  db.user.hasOne(db.contact, {foreignKey:'userUUID', as:'contactDetails'});
   db.contact.belongsTo(db.user);
   
 //for production
